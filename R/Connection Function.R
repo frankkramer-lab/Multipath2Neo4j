@@ -10,7 +10,7 @@
 #' @export
 #'
 #' @examples
-#' connection = connectToNeo4j()
+#' connection = connectToNeo4j("http://localhost:7474", "neo4j", "pathways")
 #' To check if the connection succeeded, use connection$ping()
 #' connection = connectToNeo4j()
 connectToNeo4j <- function(url, user, db) {
