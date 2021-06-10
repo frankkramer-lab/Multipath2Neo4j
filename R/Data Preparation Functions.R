@@ -4,7 +4,7 @@
 #' @param biopax The biopax object.
 #' @param g The mully graph.
 #'
-#' @return A dataframe of nodes ready to be craeted in Neo4j database.
+#' @return A dataframe of nodes ready to be created in Neo4j database.
 #' @export
 #' @import mully
 #' @export
@@ -92,5 +92,49 @@ splitDBIDs <- function(biopax, nodes_df){
   }
   #Remove the columns "id" and "database" from the dataframe containing the nodes
   result = result[ , !(names(result) %in% c("id","database"))]
+  return(result)
+}
+
+#' Prepare the relationships dataframe
+#'
+#' Prepare a dataframe containing the relationships of a mully graph, extracted from getEdgesAttribues() function, to be created in Neo4j database. The dataframe contains the relationships' label, extremities nodes' labels, relationships' labels and their property keys.
+#' @param g The mully graph.
+#' @param nodes The nodes dataframe, containing the nodes' labels
+#'
+#' @return A dataframe of relationships ready to be created in Neo4j database.
+#' @export
+#' @import mully
+#' @export
+#'
+#' @examples
+#' #Get the dataframe of nodes to be created
+#' nodes = prepareNodesDataframeToCreate(wntBiopax,wntmully)
+#'
+#' #Get the dataframe of nodes to be created
+#' relationships = prepareRelationshipsDataframeToCreate(wntmully,nodes)
+prepareRelationshipsDataframeToCreate <- function(g, nodes){
+  #If the function is called without passing a mully graph, raise an exception
+  if(missing(g)){
+    stop("Mully Graph must be specified")
+  }
+  #If the function is called without passing a nodes dataframe, raise an exception
+  if(missing(nodes)){
+    stop("Nodes dataframe must be specified")
+  }
+  #If the function is called with a nodes dataframe missing a label column, raise an exception
+  if(!'label' %in% colnames(nodes)){
+    stop("Nodes dataframe must contain a column called 'label")
+  }
+
+  #Get all edges of the mully graph
+  result = getEdgeAttributes(g)
+
+  #Put the label of V1 and Vo2 nodes in each row
+  result$'V1 label' = nodes$'label'[match(result$'V1', nodes$'name')]
+  result$'V2 label' = nodes$'label'[match(result$'V2', nodes$'name')]
+
+  #Put the relationship type in each row (if V1 and V2 have the same label "intra", otherwise "inter")
+  result$'label' = ifelse(result$`V1 label` == result$`V2 label`, 'intra', 'inter')
+
   return(result)
 }
