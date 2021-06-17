@@ -1,6 +1,6 @@
-#' Get the number of labels in a graph
+#' Get the number of labels in a Neo4j graph
 #'
-#' Get the number of labels in a graph
+#' Get the number of labels in a Neo4j graph
 #' @param connection The Neo4j connection object.
 #'
 #' @return The labels count in case of success, otherwise the result from the Neo4j call.
@@ -81,14 +81,15 @@ isLabel <- function(connection, label){
 }
 
 
-#' Get the attributes of a node, or all nodes
+#' Get the attributes of a node, or all nodes in a Neo4j graph
 #'
-#' Get the attributes of a node, or all nodes
+#' Get the attributes of a node, or all nodes in a Neo4j graph
 #' @param connection The Neo4j connection object.
 #' @param property_key The node property key name to be identified by.
 #' @param property_key_value The started node property key value to be found within.
 #'
 #' @return A dataframe containing the attributes of the specified node. If the node property key and value are not specified, all nodes with their attributes are returned, in case of success, otherwise the result from the Neo4j call.
+#'
 #' @export
 #' @import neo4r
 #' @export
@@ -132,4 +133,48 @@ getNodeAttributes <- function(connection, property_key = NULL, property_key_valu
   }
   return(tmp)
 }
+
+
+#' Get the nodes on a layer in a Neo4j graph
+#'
+#' Get the nodes on a layer in a Neo4j graph
+#' @param connection The Neo4j connection object.
+#' @param label The name of the label.
+#' @param property_key The node property key name to be extracted.
+#'
+#' @return A list of nodes having the label, with their property key values.
+#'
+#' @export
+#' @import neo4r
+#' @export
+#'
+#' @examples
+#' #To get the list of Proteins' names
+#' result = getLabel(connection, "Protein", "name")
+getLabel <- function(connection, label, property_key){
+  #If the function is called without passing a neo4j connection, raise an exception
+  if(missing(connection)){
+    stop("Neo4j Connection must be specified")
+  }
+  #If the function is called without passing a label, raise an exception
+  if(missing(label) || label == ""){
+    stop("Label must be specified")
+  }
+  #If the function is called without passing a node property key, raise an exception
+  if(missing(property_key) || property_key == ""){
+    stop("Node Property Key must be specified")
+  }
+
+  query = paste0("MATCH (n:", label, ") RETURN n.", property_key)
+
+  result = call_neo4j(query, connection, type = c("row", "graph"), output = c("r","json"), include_stats = FALSE, include_meta = FALSE)
+
+  tmp = result
+  if(is.null(result$error_code))
+  {
+    tmp = unlist(result, use.names = FALSE)
+  }
+  return(tmp)
+}
+
 
