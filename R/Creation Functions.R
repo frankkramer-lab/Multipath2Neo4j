@@ -31,17 +31,18 @@ createNode <- function(connection, node_label, property_keys = NULL) {
   if(missing(connection)){
     stop("Neo4j Connection must be specified")
   }
+  if(connection$ping() == FALSE){
+    stop("Check your connection")
+  }
+
   #If the function is called without passing a node label, raise an exception
-  if(missing(node_label) || is.null(node_label)){
+  if(missing(node_label) || is.null(node_label) || node_label == ""){
     stop("Node Label must be specified")
   }
 
   #If the property keys are passed as parameters, and if any property does not have a value, raise an exception
   if(!is.null(property_keys) && any(is.na(property_keys[,]))){
     stop("Property Keys must have values, not NA")
-  }
-  if(connection$ping() == FALSE){
-    stop("Check your connection")
   }
 
   query = paste0("CREATE (n:", node_label, sep = "")
