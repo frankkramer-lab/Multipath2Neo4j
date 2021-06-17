@@ -143,5 +143,11 @@ prepareRelationshipsDataframeToCreate <- function(g, nodes){
   #Put the relationship type in each row (if V1 and V2 have the same label "intra", otherwise "inter")
   result$'label' = ifelse(result$`V1 label` == result$`V2 label`, 'intra', 'inter')
 
+  #Remove spaces from columns names (Neo4j does not accept spaces in property keys names)
+  names(result) = gsub(names(result), pattern = " ", replacement = "_")
+
+  #Replace all double quotes with single quotes in the dataframe for creation relationship query
+  result = data.frame(lapply(result, function(x) {gsub('"', "'", x)}))
+
   return(result)
 }

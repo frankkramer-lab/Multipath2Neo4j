@@ -32,7 +32,7 @@ createNode <- function(connection, node_label, property_keys = NULL) {
     stop("Neo4j Connection must be specified")
   }
   #If the function is called without passing a node label, raise an exception
-  if(missing(node_label)){
+  if(missing(node_label) || is.null(node_label)){
     stop("Node Label must be specified")
   }
 
@@ -52,11 +52,9 @@ createNode <- function(connection, node_label, property_keys = NULL) {
       query = paste0(query, property, ": '", sep = "")
 
       property_key_corrected = property_keys[,property]
-
       if(grepl("'", property_keys[,property], fixed = TRUE))
       {
         property_key_corrected = unlist(strsplit(as.character(property_keys[,property]), "'"))
-
         property_key_corrected = paste0(unlist(property_key_corrected), sep = "", collapse = "\\'")
       }
 
@@ -115,8 +113,8 @@ createNode <- function(connection, node_label, property_keys = NULL) {
 #' relationship_property_keys = as.data.frame(relationship_property_keys[,-na_cells])
 #' colnames(relationship_property_keys) = names_not_na
 #'
-#' createRelationship(connection, relationships[row,'V1 label'], 'name',
-#'                     relationships[row,'V1'], relationships[row,'V2 label'],
+#' createRelationship(connection, relationships[row,'V1_label'], 'name',
+#'                     relationships[row,'V1'], relationships[row,'V2_label'],
 #'                       'name', relationships[row,'V2'], relationships[row,'label'],
 #'                          relationship_property_keys)
 #'}
@@ -135,67 +133,72 @@ createRelationship <- function(connection,
   }
 
   #If the function is called without passing the label of the started node, raise an exception
-  if(missing(started_node_label)){
+  if(missing(started_node_label) || is.null(started_node_label) || started_node_label == ""){
     stop("Started Node Label must be specified")
   }
   #If the function is called without passing a property of the started node, raise an exception
-  if(missing(started_node_property)){
+  if(missing(started_node_property) || is.null(started_node_property) || started_node_property == ""){
     stop("Started Node Property must be specified")
   }
   #If the function is called without passing the property's value of the started node, raise an exception
-  if(missing(started_node_property_value)){
+  if(missing(started_node_property_value) || is.null(started_node_property_value) || started_node_property_value == ""){
     stop("Started Node Property value must be specified")
   }
-  #If the function is called without passing the label of the started node, raise an exception
 
   #If the function is called without passing the label of the end node, raise an exception
-  if(missing(end_node_label)){
+  if(missing(end_node_label) || is.null(end_node_label) || end_node_label == ""){
     stop("End Node Label must be specified")
   }
   #If the function is called without passing a property of the end node, raise an exception
-  if(missing(end_node_property)){
+  if(missing(end_node_property) || is.null(end_node_property) || end_node_property == ""){
     stop("End Node Property must be specified")
   }
   #If the function is called without passing the property's value of the end node, raise an exception
-  if(missing(end_node_property_value)){
+  if(missing(end_node_property_value) || is.null(end_node_property_value) || end_node_property_value == ""){
     stop("End Node Property value must be specified")
   }
 
-  #If the function is called without passing the Relationship type, raise an exception
-  if(missing(relationship_label)){
+  #If the function is called without passing the Relationship label, raise an exception
+  if(missing(relationship_label) || is.null(relationship_label) || relationship_label == ""){
     stop("Relationship Label must be specified")
   }
 
-  query = paste("MATCH (a:", started_node_label, sep="")
-  query = paste(query, "),(b:", sep="")
-  query = paste(query, end_node_label, sep="")
-  query = paste(query, ") WHERE a.", sep="")
-  query = paste(query, started_node_property, sep="")
-  query = paste(query, " = '", sep="")
-  query = paste(query, started_node_property_value, sep="")
-  query = paste(query, "' AND b.", sep="")
-  query = paste(query, end_node_property, sep="")
-  query = paste(query, " = '", sep="")
-  query = paste(query, end_node_property_value, sep="")
-  query = paste(query, "' CREATE (a)-[r:", sep="")
-  query = paste(query, relationship_label, sep="")
+  query = paste0("MATCH (a:", started_node_label, "),(b:", end_node_label,
+                 ") WHERE a.", started_node_property, " = '",
+                 started_node_property_value, "' AND b.", end_node_property,
+                 " = '", end_node_property_value, "' CREATE (a)-[r:",
+                 relationship_label)
+
 
   if(!is.null(relationship_property_keys)){
-    query = paste(query, "{", sep=" ")
+    query = paste0(query, "{ ")
     for(property in colnames(relationship_property_keys)){
-      property_correct = gsub(" ", "_", property, fixed = TRUE)
-      query = paste(query, property_correct , sep="")
-      query = paste(query, ": '" , sep="")
-      query = paste(query, relationship_property_keys[,property] , sep="")
-      query = paste(query, "'" , sep="")
+      query = paste0(query, property,  ": '")
+
+      property_key_corrected = relationship_property_keys[,property]
+      if(grepl("'", relationship_property_keys[,property], fixed = TRUE))
+      {
+        property_key_corrected = unlist(strsplit(as.character(relationship_property_keys[,property]), "'"))
+        property_key_corrected = paste0(unlist(property_key_corrected), sep = "", collapse = "\\'")
+      }
+
+      query = paste0(query, property_key_corrected , "'")
       if(property != rev(names(relationship_property_keys))[1]){
-        query = paste(query, ", " , sep="")
+        query = paste0(query, ", ")
       }
     }
-    query = paste(query, "}", sep="")
+    query = paste0(query, "}")
   }
-  query = paste(query, "]->(b)", sep=" ")
+  query = paste0(query, "]->(b)")
 
   result = call_neo4j(query, connection, type = c("row", "graph"), output = c("r","json"), include_stats = FALSE, include_meta = FALSE)
+  if(is.null(result$error_code))
+  {
+    print("Relationship Created Successfully")
+  }
+  else{
+    print("Relationship Not Created")
+  }
+
   return(result)
 }
