@@ -27,13 +27,15 @@ deleteAllNodesOfLabel <- function(connection, label){
     stop("Check your connection")
   }
   #If the function is called without passing a label, raise an exception
-  if(missing(label)){
+  if(missing(label) || is.null(label) || label == ""){
     stop("Label must be specified")
   }
 
   query = paste("MATCH (n:", label, sep="")
-  query = paste(query, ") DELETE n", sep="")
+  query = paste(query, ") DETACH DELETE n", sep="")
 
   result = call_neo4j(query, connection, type = c("row", "graph"), output = c("r","json"), include_stats = FALSE, include_meta = FALSE)
   return(result)
 }
+
+
