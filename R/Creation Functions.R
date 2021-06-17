@@ -23,7 +23,7 @@
 #'  names_not_na = names(node_property_keys)[-na_cells]
 #'  node_property_keys = as.data.frame(node_property_keys[,-na_cells])
 #'  colnames(node_property_keys) = names_not_na
-
+#'
 #'  createNode(connection,nodes[row,'label'],node_property_keys)
 #' }
 createNode <- function(connection, node_label, property_keys = NULL) {
@@ -40,28 +40,49 @@ createNode <- function(connection, node_label, property_keys = NULL) {
   if(!is.null(property_keys) && any(is.na(property_keys[,]))){
     stop("Property Keys must have values, not NA")
   }
+  if(connection$ping() == FALSE){
+    stop("Check your connection")
+  }
 
-  query = paste("CREATE (n:", node_label, sep="")
+  query = paste0("CREATE (n:", node_label, sep = "")
 
   if(!is.null(property_keys)){
-    query = paste(query, "{", sep=" ")
+    query = paste0(query, " {", sep = "")
     for(property in colnames(property_keys)){
-      property_correct = gsub(" ", "_", property, fixed = TRUE)
-      query = paste(query, property_correct , sep="")
-      query = paste(query, ": '" , sep="")
-      query = paste(query, property_keys[,property] , sep="")
-      query = paste(query, "'" , sep="")
+      query = paste0(query, property, ": '", sep = "")
+
+      property_key_corrected = property_keys[,property]
+
+      if(grepl("'", property_keys[,property], fixed = TRUE))
+      {
+        property_key_corrected = unlist(strsplit(as.character(property_keys[,property]), "'"))
+
+        property_key_corrected = paste0(unlist(property_key_corrected), sep = "", collapse = "\\'")
+      }
+
+      query = paste0(query, property_key_corrected, sep = "")
+
+      query = paste0(query, "'", sep = "")
       if(property != rev(names(property_keys))[1]){
-        query = paste(query, ", " , sep="")
+        query = paste0(query, ", ", sep = "")
       }
     }
-    query = paste(query, "}", sep="")
+    query = paste0(query, "}", sep = "")
   }
-  query = paste(query, ")", sep="")
+  query = paste0(query, ")", sep = "")
 
   result = call_neo4j(query, connection, type = c("row", "graph"), output = c("r","json"), include_stats = FALSE, include_meta = FALSE)
+
+  if(is.null(result$error_code))
+  {
+    print("Node Created Successfully")
+  }
+  else{
+    print("Node Not Created")
+  }
   return(result)
 }
+
 
 #' Create a relationship with its property keys in Neo4j database
 #'
@@ -108,6 +129,9 @@ createRelationship <- function(connection,
   #If the function is called without passing a neo4j connection, raise an exception
   if(missing(connection)){
     stop("Neo4j Connection must be specified")
+  }
+  if(connection$ping() == FALSE){
+    stop("Check your connection")
   }
 
   #If the function is called without passing the label of the started node, raise an exception

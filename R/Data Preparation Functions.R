@@ -35,6 +35,13 @@ prepareNodesDataframeToCreate <- function(biopax, g){
 
   #Remove the column "n" from the dataframe containing the nodes
   result = result[ , !(names(result) %in% c("n", "id","database"))]
+
+  #Remove spaces from columns names (Neo4j does not accept spaces in property keys names)
+  names(result) = gsub(names(result), pattern = " ", replacement = "_")
+
+  #Replace all double quotes with single quotes in the dataframe for creation node query
+  result = data.frame(lapply(result, function(x) {gsub('"', "'", x)}))
+
   return(result)
 }
 
