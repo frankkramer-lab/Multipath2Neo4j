@@ -112,6 +112,9 @@ removeNode <- function(connection, property_key, property_key_value){
 #' @export
 #'
 #' @examples
+#' #Get the dataframe of relationships to be created
+#' relationships = prepareRelationshipsDataframeToCreate(wntmully,nodes)
+#'
 #' #Delete all relationships in the Neo4j database
 #' for(row in 1:nrow(relationships)){
 #'   removeRelationship(connection, "name", relationships[row,'V1'], "name", relationships[row,'V2'])
