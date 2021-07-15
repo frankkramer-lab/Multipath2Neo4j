@@ -115,9 +115,6 @@ splitDBIDs <- function(biopax, nodes_df){
 #'
 #' @examples
 #' #Get the dataframe of nodes to be created
-#' nodes = prepareNodesDataframeToCreate(wntBiopax,wntmully)
-#'
-#' #Get the dataframe of nodes to be created
 #' relationships = prepareRelationshipsDataframeToCreate(wntmully,nodes)
 prepareRelationshipsDataframeToCreate <- function(g, nodes){
   #If the function is called without passing a mully graph, raise an exception
