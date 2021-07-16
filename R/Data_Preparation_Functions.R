@@ -22,7 +22,7 @@ prepareNodesDataframeToCreate <- function(biopax, g){
   }
 
   #Get all the nodes of the mully graph
-  result = getNodeAttributes(g)
+  result = mully::getNodeAttributes(g)
 
   #Get all the layers of the mully graph
   node_layers = g$layers
