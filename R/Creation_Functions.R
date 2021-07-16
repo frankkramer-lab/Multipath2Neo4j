@@ -74,10 +74,10 @@ createNode <- function(connection, node_label, property_keys = NULL) {
 
   if(is.null(result$error_code))
   {
-    print("Node Created Successfully")
+    cat("Node Created Successfully")
   }
   else{
-    print("Node Not Created")
+    cat("Node Not Created")
   }
   return(result)
 }
@@ -96,7 +96,8 @@ createNode <- function(connection, node_label, property_keys = NULL) {
 #' @param relationship_label The relationship label.
 #' @param relationship_property_keys The relationship property keys, in the form of dataframe.
 #'
-#' @return
+#' @return The result from the Neo4j call.
+#'
 #' @export
 #' @import neo4r
 #' @export
@@ -105,16 +106,16 @@ createNode <- function(connection, node_label, property_keys = NULL) {
 #' #Get the dataframe of relationships to be created
 #' relationships = prepareRelationshipsDataframeToCreate(wntmully,nodes)
 #'
-#'#Create all nodes in the Neo4j database
-#'for(row in 1:nrow(relationships)){
-#' relationship_property_keys = relationships[row, !names(relationships) %in% c("label", "V1 label", "V2 label", "V1", "V2")]
+#' #Create all nodes in the Neo4j database
+#' for(row in 1:nrow(relationships)){
+#'  relationship_property_keys = relationships[row, !names(relationships) %in% c("label", "V1 label", "V2 label", "V1", "V2")]
 #'
-#' na_cells = which(is.na(relationship_property_keys))
-#' names_not_na = names(relationship_property_keys)[-na_cells]
-#' relationship_property_keys = as.data.frame(relationship_property_keys[,-na_cells])
-#' colnames(relationship_property_keys) = names_not_na
+#'  na_cells = which(is.na(relationship_property_keys))
+#'  names_not_na = names(relationship_property_keys)[-na_cells]
+#'  relationship_property_keys = as.data.frame(relationship_property_keys[,-na_cells])
+#'  colnames(relationship_property_keys) = names_not_na
 #'
-#' createRelationship(connection, relationships[row,'V1_label'], 'name',
+#'  createRelationship(connection, relationships[row,'V1_label'], 'name',
 #'                     relationships[row,'V1'], relationships[row,'V2_label'],
 #'                       'name', relationships[row,'V2'], relationships[row,'label'],
 #'                          relationship_property_keys)
@@ -195,10 +196,10 @@ createRelationship <- function(connection,
   result = call_neo4j(query, connection, type = c("row", "graph"), output = c("r","json"), include_stats = FALSE, include_meta = FALSE)
   if(is.null(result$error_code))
   {
-    print("Relationship Created Successfully")
+    cat("Relationship Created Successfully")
   }
   else{
-    print("Relationship Not Created")
+    cat("Relationship Not Created")
   }
 
   return(result)

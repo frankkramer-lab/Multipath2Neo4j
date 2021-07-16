@@ -38,7 +38,7 @@ deleteAllNodesOfLabel <- function(connection, label){
 
   if(is.null(result$error_code))
   {
-    print(paste0("All nodes of label ", label," have been deleted successfully"))
+    cat(paste0("All nodes of label ", label," have been deleted successfully"))
   }
 
   return(result)
@@ -195,7 +195,7 @@ removeRelationship <- function(connection, started_node_property,
   result = call_neo4j(capture.output(cat(query)), connection, type = c("row", "graph"), output = c("r","json"), include_stats = FALSE, include_meta = FALSE)
 
   if(is.null(result$error_code)){
-    print("Relationship has been deleted successfully")
+    cat("Relationship has been deleted successfully")
   }
   return(result)
 }
