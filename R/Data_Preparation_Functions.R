@@ -46,7 +46,6 @@ prepareNodesDataframeToCreate <- function(biopax, g){
 }
 
 
-
 #' Split the databases' ids' of the nodes extracted from the function getNodesAttributes()
 #'
 #' @param biopax The biopax object.
@@ -101,6 +100,7 @@ splitDBIDs <- function(biopax, nodes_df){
   result = result[ , !(names(result) %in% c("id","database"))]
   return(result)
 }
+
 
 #' Prepare the relationships dataframe
 #'
