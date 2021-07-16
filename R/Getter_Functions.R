@@ -196,7 +196,7 @@ getLabel <- function(connection, label, property_key){
 #' @return A dataframe containing the relationships with their attributes. If both nodes' properties and values are missing, it returns all the relationships with their attributes. If the started node's property name and value are given, it returns all the relationships starting from this node. If the end node's property name and value are given, it returns all the relationships ending with this node.
 #'
 #' @export
-#' @import neo4r, dplyr
+#' @import neo4r
 #' @export
 #'
 #' @examples
@@ -275,7 +275,7 @@ getRelationshipAttributes <- function(connection, returned_started_node_property
 
   returned_started_node_property_c = gsub(returned_started_node_property, pattern = " ", replacement = "_")
   returned_end_node_property_c = gsub(returned_end_node_property, pattern = " ", replacement = "_")
-  query = paste0(query, ") RETURN n.", returned_started_node_property_c, ",r,m.", returned_end_node_property_c)
+  query = paste0(query, ") RETURN n.", returned_started_node_property_c, ",m.", returned_end_node_property_c, ",r")
 
   result = call_neo4j(query, connection, type = c("row", "graph"), output = c("r","json"), include_stats = FALSE, include_meta = FALSE)
 
@@ -289,7 +289,6 @@ getRelationshipAttributes <- function(connection, returned_started_node_property
     colnames(tmp)[which(names(tmp) == "value.1")] = "V2"
     colnames(tmp)[startsWith(colnames(tmp),"r.")] = str_remove(colnames(tmp)[startsWith(colnames(tmp),"r.")],"r.")
 
-    tmp = tmp %>% relocate(V1,V2)
   }
   return(tmp)
 }
