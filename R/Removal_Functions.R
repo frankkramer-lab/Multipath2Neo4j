@@ -7,18 +7,18 @@
 #' @return The result from the Neo4j call.
 #'
 #' @export
-#' @import neo4r
-#' @export
 #'
 #' @examples
+#' \dontrun{
 #' #To delete all labels
 #' for(label in wntmully$layers$Name){
-#'  deleteAllNodesOfLabel(connection,label)
+#'  removeAllNodesOfLabel(connection,label)
 #' }
 #'
 #' #To delete drugs nodes
-#' deleteAllNodesOfLabel(connection,"drugs")
-deleteAllNodesOfLabel <- function(connection, label){
+#' removeAllNodesOfLabel(connection,"drugs")
+#' }
+removeAllNodesOfLabel <- function(connection, label){
   #If the function is called without passing a neo4j connection, raise an exception
   if(missing(connection)){
     stop("Neo4j Connection must be specified")
@@ -53,14 +53,16 @@ deleteAllNodesOfLabel <- function(connection, label){
 #' @param property_key_value The node property key value to be found within.
 #'
 #' @return The result from the Neo4j call.
+#' @importFrom neo4r call_neo4j
+#' @importFrom utils capture.output
 #'
-#' @export
-#' @import neo4r
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' #To remove the node of name Protein1
 #' removeNode(connection, "name", "Protein1")
+#' }
 removeNode <- function(connection, property_key, property_key_value){
   #If the function is called without passing a neo4j connection, raise an exception
   if(missing(connection)){
@@ -98,7 +100,8 @@ removeNode <- function(connection, property_key, property_key_value){
 
 #' Delete a relationship between 2 nodes in the Neo4j graph
 #'
-#' Delete a relationship between 2 nodes in the Neo4j graph. If no relationship property keys are given as argument, all relationships between the 2 nodes are deleted.
+#' Delete a relationship between 2 nodes in the Neo4j graph. If no relationship property keys are given as argument,
+#' all relationships between the 2 nodes are deleted.
 #' @param connection The Neo4j connection object.
 #' @param started_node_property The started node property key name to be identified by.
 #' @param started_node_property_value The started node property key value to be found within.
@@ -107,11 +110,12 @@ removeNode <- function(connection, property_key, property_key_value){
 #' @param relationship_property_keys The relationship property keys, in the form of dataframe.
 #'
 #' @return The result from the Neo4j call.
-#' @export
-#' @import neo4r
+#' @importFrom neo4r call_neo4j
+#' @importFrom utils capture.output
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' #Get the dataframe of relationships to be created
 #' relationships = prepareRelationshipsDataframeToCreate(wntmully,nodes)
 #'
@@ -120,9 +124,10 @@ removeNode <- function(connection, property_key, property_key_value){
 #'   removeRelationship(connection, "name", relationships[row,'V1'], "name", relationships[row,'V2'])
 #' }
 #'
-#' #Delete the relationships started from the node of name Complex10 and ended in the node of name Protein1 in the Neo4j database
+#' #Delete the relationships started from the node of name Complex10 and ended
+#' in the node of name Protein1 in the Neo4j database
 #' removeRelationship(connection, "name", "Complex10", "name", "Protein1")
-
+#' }
 removeRelationship <- function(connection, started_node_property,
                        started_node_property_value, end_node_property,
                        end_node_property_value, relationship_property_keys = NULL){

@@ -1,11 +1,18 @@
 Package: Multipath2Neo4j
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Title: A package for collecting, modeling, visualizing and storing biological pathways networks in Neo4j
+Version: 1.0.0
+Author: Mariam Hammoud
+Maintainer: Mariam Hammoud <hammoudmariam24@gmail.com>
+Description: The package serves as a general efficient framework, free of domain specific contexts, for collecting, modeling, visualizing and storing biological knowledge related to pathways.
+License: GPL (>= 2)
 Encoding: UTF-8
-LazyData: true
+Imports:
+  rBiopaxParser (>= 2.32.0),
+  Multipath,
+  mully (>= 2.1.33),
+  stringi,
+  stringr,
+  neo4r,
+  rstudioapi
+RoxygenNote: 7.1.1

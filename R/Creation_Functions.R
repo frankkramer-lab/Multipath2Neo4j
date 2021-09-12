@@ -6,12 +6,12 @@
 #' @param property_keys The node property keys, in the form of dataframe.
 #'
 #' @return The result from the Neo4j call.
+#' @importFrom neo4r call_neo4j
 #'
-#' @export
-#' @import neo4r
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' #Get the dataframe of nodes to be created
 #' nodes = prepareNodesDataframeToCreate(wntBiopax,wntmully)
 #'
@@ -25,6 +25,7 @@
 #'  colnames(node_property_keys) = names_not_na
 #'
 #'  createNode(connection,nodes[row,'label'],node_property_keys)
+#' }
 #' }
 createNode <- function(connection, node_label, property_keys = NULL) {
   #If the function is called without passing a neo4j connection, raise an exception
@@ -97,18 +98,18 @@ createNode <- function(connection, node_label, property_keys = NULL) {
 #' @param relationship_property_keys The relationship property keys, in the form of dataframe.
 #'
 #' @return The result from the Neo4j call.
-#'
-#' @export
-#' @import neo4r
+#' @importFrom neo4r call_neo4j
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' #Get the dataframe of relationships to be created
 #' relationships = prepareRelationshipsDataframeToCreate(wntmully,nodes)
 #'
 #' #Create all nodes in the Neo4j database
 #' for(row in 1:nrow(relationships)){
-#'  relationship_property_keys = relationships[row, !names(relationships) %in% c("label", "V1 label", "V2 label", "V1", "V2")]
+#'  relationship_property_keys = relationships[row, !names(relationships) %in%
+#'  c("label", "V1 label", "V2 label", "V1", "V2")]
 #'
 #'  na_cells = which(is.na(relationship_property_keys))
 #'  names_not_na = names(relationship_property_keys)[-na_cells]
@@ -119,6 +120,7 @@ createNode <- function(connection, node_label, property_keys = NULL) {
 #'                     relationships[row,'V1'], relationships[row,'V2_label'],
 #'                       'name', relationships[row,'V2'], relationships[row,'label'],
 #'                          relationship_property_keys)
+#' }
 #'}
 createRelationship <- function(connection,
                                started_node_label, started_node_property,

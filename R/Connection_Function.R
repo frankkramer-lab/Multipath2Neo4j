@@ -5,14 +5,17 @@
 #' @param db The database name.
 #'
 #' @return A connection object to the Neo4j Server.
-#' @export
-#' @import neo4r
+#' @importFrom neo4r neo4j_api
+#' @importFrom rstudioapi askForPassword
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' connection = connectToNeo4j("http://localhost:7474", "neo4j", "pathways")
-#' To check if the connection succeeded, use connection$ping()
+#' connection$ping()
 #' connection = connectToNeo4j()
+#' }
+#'
 connectToNeo4j <- function(url, user, db) {
   if(missing(url)){
     stop("URL must be specified")
@@ -27,7 +30,7 @@ connectToNeo4j <- function(url, user, db) {
   connection <- neo4j_api$new(
     url = url,
     user = user,
-    password = rstudioapi::askForPassword(),
+    password = askForPassword(),
     db = db
     )
 

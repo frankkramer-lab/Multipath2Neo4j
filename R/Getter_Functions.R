@@ -4,14 +4,15 @@
 #' @param connection The Neo4j connection object.
 #'
 #' @return The labels count in case of success, otherwise the result from the Neo4j call.
+#' @importFrom neo4r call_neo4j
 #'
-#' @export
-#' @import neo4r
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' #To get the labels count
 #' result = getLabelsCount(connection)
+#' }
 getLabelsCount <- function(connection){
   #If the function is called without passing a neo4j connection, raise an exception
   if(missing(connection)){
@@ -40,14 +41,14 @@ getLabelsCount <- function(connection){
 #' @param label The name of the label.
 #'
 #' @return A boolean value in case of success, otherwise the result from the Neo4j call.
+#' @importFrom neo4r call_neo4j
 #'
 #' @export
-#' @import neo4r
-#' @export
-#'
 #' @examples
+#' \dontrun{
 #' #To get the labels count
 #' isLabel(connection, "DrUGs")
+#' }
 isLabel <- function(connection, label){
   #If the function is called without passing a neo4j connection, raise an exception
   if(missing(connection)){
@@ -88,18 +89,20 @@ isLabel <- function(connection, label){
 #' @param property_key The node property key name to be identified by.
 #' @param property_key_value The started node property key value to be found within.
 #'
-#' @return A dataframe containing the attributes of the specified node. If the node property key and value are not specified, all nodes with their attributes are returned, in case of success, otherwise the result from the Neo4j call.
+#' @return A dataframe containing the attributes of the specified node. If the node property key and value are not specified,
+#' all nodes with their attributes are returned, in case of success, otherwise the result from the Neo4j call.
+#' @importFrom neo4r call_neo4j
 #'
-#' @export
-#' @import neo4r
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' #To get all the nodes with their attributes
 #' nodes = getNodeAttributes(connection)
 #'
 #' #To get the nodes of name Complex70 with its attributes
 #' nodes = getNodeAttributes(connection,"name","Complex70")
+#' }
 getNodeAttributes <- function(connection, property_key = NULL, property_key_value = NULL){
   #If the function is called without passing a neo4j connection, raise an exception
   if(missing(connection)){
@@ -143,14 +146,15 @@ getNodeAttributes <- function(connection, property_key = NULL, property_key_valu
 #' @param property_key The node property key name to be extracted.
 #'
 #' @return A list of nodes having the label, with their property key values.
+#' @importFrom neo4r call_neo4j
 #'
-#' @export
-#' @import neo4r
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' #To get the list of Proteins' names
 #' result = getLabel(connection, "Protein", "name")
+#' }
 getLabel <- function(connection, label, property_key){
   #If the function is called without passing a neo4j connection, raise an exception
   if(missing(connection)){
@@ -193,13 +197,16 @@ getLabel <- function(connection, label, property_key){
 #' @param end_node_property The end node property key name to be identified by.
 #' @param end_node_property_value The end node property key value to be found within.
 #'
-#' @return A dataframe containing the relationships with their attributes. If both nodes' properties and values are missing, it returns all the relationships with their attributes. If the started node's property name and value are given, it returns all the relationships starting from this node. If the end node's property name and value are given, it returns all the relationships ending with this node.
+#' @return A dataframe containing the relationships with their attributes. If both nodes' properties and values are missing,
+#' it returns all the relationships with their attributes. If the started node's property name and value are given,
+#' it returns all the relationships starting from this node. If the end node's property name and value are given,
+#' it returns all the relationships ending with this node.
+#' @importFrom neo4r call_neo4j
+#' @importFrom stringr str_remove
 #'
 #' @export
-#' @import neo4r
-#' @export
-#'
 #' @examples
+#' \dontrun{
 #' #To get all the edges with their attributes
 #' edges = getRelationshipAttributes(connection, "name", "name")
 #'
@@ -207,7 +214,9 @@ getLabel <- function(connection, label, property_key){
 #' edges = getRelationshipAttributes(connection, "name", "name", "name", "Complex1")
 #'
 #' #To get all the edges ending with the node of name Complex10 with their attributes
-#' edges = getRelationshipAttributes(connection, "name", "name", end_node_property = "name", end_node_property_value = "Complex10")
+#' edges = getRelationshipAttributes(connection, "name", "name",
+#' end_node_property = "name", end_node_property_value = "Complex10")
+#' }
 getRelationshipAttributes <- function(connection, returned_started_node_property,
                                       returned_end_node_property,
                                       started_node_property = NULL,

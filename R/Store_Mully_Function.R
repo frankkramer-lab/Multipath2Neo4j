@@ -8,12 +8,11 @@
 #' @return A boolean value: TRUE if the mully graph has been saved in the Neo4j server. Otherwise FALSE.
 #'
 #' @export
-#' @import neo4r, mully
-#' @export
-#'
 #' @examples
-#' saveMully(connection, wntBiopax, wntmully)
-saveMully <- function(connection, biopax, mully){
+#' \dontrun{
+#' storeMully(connection, wntBiopax, wntmully)
+#' }
+storeMully <- function(connection, biopax, mully){
   #If the function is called without passing a neo4j connection, raise an exception
   if(missing(connection)){
     stop("Neo4j Connection must be specified")
@@ -56,7 +55,7 @@ saveMully <- function(connection, biopax, mully){
       if(row < nrow(nodes)){
         #Delete all nodes in the Neo4j database
         for(label in mully$layers$Name){
-          deleteAllNodesOfLabel(connection,label)
+          removeAllNodesOfLabel(connection,label)
         }
         return(FALSE)
       }
@@ -83,7 +82,7 @@ saveMully <- function(connection, biopax, mully){
       if(row < nrow(nodes)){
         #Delete all nodes in the Neo4j database
         for(label in mully$layers$Name){
-          deleteAllNodesOfLabel(connection,label)
+          removeAllNodesOfLabel(connection,label)
         }
         return(FALSE)
       }
@@ -95,7 +94,7 @@ saveMully <- function(connection, biopax, mully){
 
       #Delete all nodes in the Neo4j database
       for(label in mully$layers$Name){
-        deleteAllNodesOfLabel(connection,label)
+        removeAllNodesOfLabel(connection,label)
       }
 
       return(FALSE)

@@ -5,12 +5,14 @@
 #' @param g The mully graph.
 #'
 #' @return A dataframe of nodes ready to be created in Neo4j database.
-#' @export
-#' @import mully
+#' @importFrom mully getNodeAttributes
+#' @importFrom mully getEdgeAttributes
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' nodes = prepareNodesDataframeToCreate(wntBiopax,wntmully)
+#' }
 prepareNodesDataframeToCreate <- function(biopax, g){
   #If the function is called without passing a biopax object, raise an exception
   if(missing(biopax)){
@@ -22,7 +24,7 @@ prepareNodesDataframeToCreate <- function(biopax, g){
   }
 
   #Get all the nodes of the mully graph
-  result = mully::getNodeAttributes(g)
+  result = getNodeAttributes(g)
 
   #Get all the layers of the mully graph
   node_layers = g$layers
@@ -52,11 +54,12 @@ prepareNodesDataframeToCreate <- function(biopax, g){
 #' @param nodes_df The nodes dataframe.
 #'
 #' @return A dataframe containing the nodes with their ids in each database respectively.
-#'
-#' @import stringi
-#'
+#' @importFrom Multipath getExternalIDs
+#' @importFrom stringi stri_join_list
 #' @examples
+#' \dontrun{
 #' nodes_dataframe = splitDBIDs(biopax, nodes_dataframe)
+#' }
 splitDBIDs <- function(biopax, nodes_df){
   if(missing(biopax)){
     stop("Biopax object must be specified")
@@ -109,13 +112,13 @@ splitDBIDs <- function(biopax, nodes_df){
 #' @param nodes The nodes dataframe, containing the nodes' labels
 #'
 #' @return A dataframe of relationships ready to be created in Neo4j database.
+#' @importFrom mully getEdgeAttributes
 #' @export
-#' @import mully
-#' @export
-#'
 #' @examples
+#' \dontrun{
 #' #Get the dataframe of nodes to be created
 #' relationships = prepareRelationshipsDataframeToCreate(wntmully,nodes)
+#' }
 prepareRelationshipsDataframeToCreate <- function(g, nodes){
   #If the function is called without passing a mully graph, raise an exception
   if(missing(g)){
