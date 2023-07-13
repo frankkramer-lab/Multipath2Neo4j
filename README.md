@@ -3,17 +3,22 @@ Multipath2Neo4j serves as a general efficient framework, free of domain specific
 
 # Description
 Multipath2Neo4j is an R package developed under the latest version of R 4.1.1. It mainly uses four R packages: neo4r, rBiopaxParser, mully and Multipath.
+
 The package first uses Multipath to download the list of all pathways, then parse them using rBiopaxParser. The obtained dataframe is then converted to a mully object, so mully project is involved in the whole process obviously. 
+
 Finally, the constructed mully graph is sent to the Neo4j in order to be stored, which is done within the neo4r package.
 
 ![image](https://github.com/frankkramer-lab/Multipath2Neo4j/assets/45902776/e5088e16-c626-46ea-bf67-3fa49e4ac9a7)
 
 # Package Installation
 The package Multipath2Neo4j is available on GitHub at the following link: https://github.com/frankkramer-lab/Multipath2Neo4j
+
 It can be installed directly from GitHub using the R package devtools. To do so, the following script should be called:
 
 require(devtools)
+
 install_github("frankkramer-lab/Multipath2Neo4j")
+
 library(Multipath2Neo4j)
 
 # Features
@@ -27,9 +32,11 @@ Below are the categories for all the functions created with their corresponding 
 # Connection
 
 • connectToNeo4j(): to establish a connection between R and Neo4j. The function takes the Neo4j server URL, username and database name as arguments and returns a Boolean value.
+
 To check if the connection succeeded, connection$ping is used.
 
-Data Preparation
+# Data Preparation
+
 • prepareNodesDataframeToCreate(): the function gets the list of all nodes of the mully object from the mully package and adjust the dataframe returned to be ready for creation process.
 
 • splitDBIDs(): a private function to add, for each node, the list of its identifiers in all databases. This function is used by prepareNodesDataframeToCreate() function.
